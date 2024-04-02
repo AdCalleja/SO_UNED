@@ -27,12 +27,11 @@ void _start(void) {
     // writer(string, strlen(string));
 
     // INITS
-    init_simd();
+    //init_simd();
     init_memory();
-    init_interrupts(1);
+    //init_interrupts(1);
 
     printf("Hola Mundo\n");
-    init_memory();
 
     // Memory check
     int * buffer = (int*)request_page();

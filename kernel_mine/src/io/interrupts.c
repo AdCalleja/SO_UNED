@@ -42,9 +42,11 @@ void init_interrupts() {
         set_idt_gate((uint64_t)GenericException_Handler, i, IDT_TA_InterruptGate, 0x28);
     }
 
+    // Casos especiales de PageFault y Doublefault
     set_idt_gate((uint64_t)PageFault_Handler, 0x0E ,IDT_TA_InterruptGate, 0x28);
     set_idt_gate((uint64_t)DoubleFault_Handler, 0x08 ,IDT_TA_InterruptGate, 0x28);
 
+    // Lo carga en la IDT/IVT
     __asm__ volatile("lidt %0" : : "m"(idtr));
 
     __asm__("sti");
