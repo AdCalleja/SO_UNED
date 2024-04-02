@@ -28,27 +28,23 @@ void _start(void) {
 
     // INITS
     //init_simd();
+    init_simd();
     init_memory();
-    //init_interrupts(1);
+    init_paging();
+    init_heap();
+    create_gdt();
+    init_interrupts(0);
+    init_keyboard();
+    init_cpus();
+    enable_interrupts();
+    
+    printf("Hey Mundo\n");
 
-    printf("Hola Mundo\n");
+    char * buffer = (char*)malloc(1000);
+    sprintf(buffer, "Hola Mundo %d\n", 5);
+    printf("String %s\n", buffer);
+    free(buffer);
 
-    // Memory check
-    int * buffer = (int*)request_page();
-
-    for (int i = 0; i < 100; i++) {
-        buffer[i] = i;
-    }
-    for (int i = 0; i < 100; i++) {
-        printf("buffer[%d] at %p = %d\n", i, &(buffer[i]), buffer[i]);
-    }
-
-    // //Trigger a page fault
-    // int a = 5;
-    // int b = a / 0;
-    // printf("The result is %d\n", b);
-
-
-
+    run_shell();
     while(1);
 }

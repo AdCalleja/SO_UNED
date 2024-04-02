@@ -117,7 +117,6 @@ void create_gdt() {
         gdt_desc[i].size = sizeof(struct gdt_entry) * MAX_GDT_ENTRIES - 1;
         gdt_desc[i].offset = (uint64_t) gdt[i];
 
-        // Crea structura vacía
         create_null_descriptor(i);
         create_code_descriptor(i, GDT_DPL_KERNEL);
         create_data_descriptor(i, GDT_DPL_KERNEL);

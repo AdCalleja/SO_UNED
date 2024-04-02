@@ -150,10 +150,8 @@ static inline void _out_char(char character, void* buffer, size_t idx, size_t ma
 {
   (void)buffer; (void)idx; (void)maxlen;
   if (character) {
-    //_putchar(character);
     void (*writer)(const char*, uint64_t) = get_terminal_writer();
     writer(&character, 1);
-
   }
 }
 
