@@ -1,7 +1,15 @@
+#include "arch/simd.h"
+#include "io/interrupts.h"
+#include "devices/keyboard/keyboard.h"
 #include "util/string.h"
 #include "bootservices/bootservices.h"
 #include "util/printf.h"
 #include "memory/memory.h"
+#include "memory/heap.h"
+#include "memory/paging.h"
+#include "arch/cpu.h"
+#include "arch/gdt.h"
+#include "debug/shell.h"
 
 /* 
 ///// COMANDOS POR SI ACASO /////
