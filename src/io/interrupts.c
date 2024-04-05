@@ -13,6 +13,7 @@
 #include "../util/printf.h"
 #include "../util/panic.h"
 #include "../devices/keyboard/keyboard.h"
+#include "../devices/mouse/mouse.h"
 
 #define __UNDEFINED_HANDLER  __asm__ ("cli"); (void)frame; panic("Undefined interrupt handler");
 
@@ -103,6 +104,15 @@ void KeyboardInt_Handler(struct cpu_context* ctx, uint8_t cpuid) {
     pic_end_master();
 }
 
+void MouseInt_Handler(struct cpu_context* ctx, uint8_t cpuid) {
+    (void)ctx;
+    (void)cpuid;
+    printf("Inside of MouseInt Handler");
+    uint8_t scancode = inb(0x60);
+    handle_mouse(scancode);
+    pic_end_master();
+}
+
 static void interrupt_exception_handler(struct cpu_context* ctx, uint8_t cpu_id) {
     printf("GENERIC EXCEPTION %d ON CPU %d\n", ctx->interrupt_number, cpu_id);
     panic("Exception\n");
@@ -167,6 +177,7 @@ void init_interrupts(uint8_t pit_disable) {
     dynamic_interrupt_handlers[0xD] = GPFault_Handler;
     dynamic_interrupt_handlers[0xE] = PageFault_Handler;
     dynamic_interrupt_handlers[KBD_IRQ] = KeyboardInt_Handler;
+    dynamic_interrupt_handlers[MSE_IRQ] = MouseInt_Handler;
     remap_pic();
 
     outb(PIC1_DATA, 0xe1);

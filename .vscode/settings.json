@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "printf.h": "c",
-        "string.h": "c",
-        "string_view": "cpp",
-        "*.tcc": "c",
-        "shell.h": "c"
-    }
-}

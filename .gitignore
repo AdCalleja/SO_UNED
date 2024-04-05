@@ -1,4 +1,3 @@
-videos/
-kernel_mine/build/
-kernel_mine/limine/
-kernel_mine/debug.gdb
+build/
+limine/
+debug.gdb

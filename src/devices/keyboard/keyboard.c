@@ -37,10 +37,10 @@ void init_keyboard() {
 
     memset((void*)keyboard, 0, sizeof(struct keyboard));
 
-    keyboard->ASCII_table = (char*)malloc(ASCII_SIZE);
+    keyboard->ASCII_table = (char*)malloc(ASCII_SIZE); // Crea espacio de memoria del tamaño de la ASCII Table
 
-    memset(keyboard->ASCII_table, 0, ASCII_SIZE);
-    memcpy(keyboard->ASCII_table, asciitable, ASCII_SIZE);
+    memset(keyboard->ASCII_table, 0, ASCII_SIZE); // Inicializa a 0
+    memcpy(keyboard->ASCII_table, asciitable, ASCII_SIZE); // Copia el valor de la tabla
 
     keyboard->left_shift_pressed = 0;
     keyboard->right_shift_pressed = 0;

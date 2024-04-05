@@ -1,6 +1,7 @@
 #include "arch/simd.h"
 #include "io/interrupts.h"
 #include "devices/keyboard/keyboard.h"
+#include "devices/mouse/mouse.h"
 #include "util/string.h"
 #include "bootservices/bootservices.h"
 #include "util/printf.h"
@@ -43,6 +44,7 @@ void _start(void) {
     create_gdt();
     init_interrupts(0);
     init_keyboard();
+    init_mouse();
     init_cpus();
     enable_interrupts();
     
