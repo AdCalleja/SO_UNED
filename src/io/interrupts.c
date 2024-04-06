@@ -25,6 +25,8 @@ volatile int dynamic_interrupt = -1;
 
 void (*dynamic_interrupt_handlers[256])(struct cpu_context* ctx, uint8_t cpuid) = {0};
 
+// Final de transación con el PIC, si el que había enviado la interrupción era un esclavo (irq > 12) hay que desactivar también el esclavo
+// Outb: escribe a PIC1_command (0x20) el EOI (0x20)
 void pic_eoi(unsigned char irq) {
     if (irq >= 12) {
         outb(PIC2_COMMAND, PIC_EOI);
@@ -45,18 +47,18 @@ void remap_pic() {
     uint8_t a1, a2;
 
     a1 = inb(PIC1_DATA);
-    io_wait();
+    io_wait();  //Note the presence of io_wait() calls, on older machines its necessary to give the PIC some time to react to commands as they might not be processed quickly
     a2 = inb(PIC2_DATA);
     io_wait();
 
-    outb(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);
+    outb(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);  // 0x10 | 0x01 = 0x11 Starts the initialization sequence (in cascade mode)
     io_wait();
     outb(PIC2_COMMAND, ICW1_INIT | ICW1_ICW4);
     io_wait();
 
-    outb(PIC1_DATA, 0x20);
+    outb(PIC1_DATA, 0x20);  //ICW2: Master PIC vector offset = 0x20
     io_wait();
-    outb(PIC2_DATA, 0x28);
+    outb(PIC2_DATA, 0x28);  // PIC2 a 0x28
     io_wait();
 
     outb(PIC1_DATA, 4);
@@ -64,15 +66,16 @@ void remap_pic() {
     outb(PIC2_DATA, 2);
     io_wait();
 
-    outb(PIC1_DATA, ICW4_8086);
+    outb(PIC1_DATA, ICW4_8086); // ICW4: have the PICs use 8086 mode (and not 8080 mode)
     io_wait();
     outb(PIC2_DATA, ICW4_8086);
     io_wait();
 
-    outb(PIC1_DATA, a1);
+    outb(PIC1_DATA, a1);  // restore saved masks.
     io_wait();
     outb(PIC2_DATA, a2);
     io_wait();
+    printf("Máscara del PIC: %d\n", a1);
 }
 
 void PageFault_Handler(struct cpu_context* ctx, uint8_t cpuid) {
@@ -110,7 +113,7 @@ void MouseInt_Handler(struct cpu_context* ctx, uint8_t cpuid) {
     printf("Inside of MouseInt Handler");
     uint8_t scancode = inb(0x60);
     handle_mouse(scancode);
-    pic_end_master();
+    pic_end_slave();
 }
 
 static void interrupt_exception_handler(struct cpu_context* ctx, uint8_t cpu_id) {
@@ -180,7 +183,7 @@ void init_interrupts(uint8_t pit_disable) {
     dynamic_interrupt_handlers[MSE_IRQ] = MouseInt_Handler;
     remap_pic();
 
-    outb(PIC1_DATA, 0xe1);
+    outb(PIC1_DATA, 0xe1);  // Máscara del PIC
     outb(PIC2_DATA, 0xef);
     interrupts_ready = 1;
     return;

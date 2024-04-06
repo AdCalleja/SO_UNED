@@ -1,4 +1,5 @@
 #include "shell.h"
+#include "../io/interrupts.h"
 #include "../devices/keyboard/keyboard.h"
 #include "../util/printf.h"
 #include "../util/string.h"
@@ -14,8 +15,12 @@ void process_commands() {
         printf("Available commands:\n");
         printf("help: Shows this help message\n");
         printf("hi: Says hi\n");
+        printf("info pic: Shows PIC info\n");
     } else if (!strcmp(buffer, "hi")) {
         printf("Hi!\n");
+    } else if (!strcmp(buffer, "info pic")) {
+    printf("PIC1 Mask IMR: %d\n", inb(PIC1_DATA));
+    printf("PIC2 Mask IMR: %d\n", inb(PIC2_DATA));
     } else {
         printf("Command not found: %s\n", buffer);
     }

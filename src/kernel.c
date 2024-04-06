@@ -56,5 +56,10 @@ void _start(void) {
     free(buffer);
 
     run_shell();
-    while(1);
+    
+    printf("Máscara del PIC: %d\n", inb(PIC1_DATA));
+    while(1){
+        if(((inb(0x64) & 0x1))==1)
+        printf("Interrupción de ratón detectada %d", inb(0x60));
+    }
 }
