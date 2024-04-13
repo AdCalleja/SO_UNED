@@ -1,5 +1,6 @@
 #include "arch/simd.h"
 #include "io/interrupts.h"
+#include "devices/pit/pit.h"
 #include "devices/keyboard/keyboard.h"
 #include "devices/mouse/mouse.h"
 #include "util/string.h"
